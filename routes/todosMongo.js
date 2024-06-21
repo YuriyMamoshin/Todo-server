@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Todo = require("../Todo");
-
+const cors = require("cors");
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
+router.use(cors());
 
 async function connect() {
   await mongoose.connect("mongodb://127.0.0.1:27017/todoApp");
@@ -30,6 +31,14 @@ router.post("/", (req, res) => {
   }
   addTodo();
 });
+
+router.delete("/", (req, res) => {
+  async function deleteAll() {
+    const deletedTodos = await Todo.deleteMany({}); 
+    res.send(deletedTodos);
+  }
+  deleteAll();
+})
 
 router
   .route("/:id")
